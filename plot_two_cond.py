@@ -47,4 +47,7 @@ plt.xlim([-1,100])
 plt.ylim([-1,100])
 plt.show()
 
+rowinf_df = pd.read_csv(dataloc + "p4py_row_data.tsv", sep="\t")
+print(rowinf_df.columns)
 
+oh = emxsub.loc[emxsub.index=="IGFBP3"]
