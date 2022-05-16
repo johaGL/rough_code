@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed May 11 18:21:41 2022
-Simulating counts for desired number of subjects
-(negative binomial distributions)
+ERROR: do not use anymore
+see below
 @author: johanna
 """
 import os
@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+from numpy.random import seed
 
 #import statsmodels.api as sm
 from scipy.special import gammaln
@@ -20,10 +21,23 @@ from scipy.special import psi
 from scipy.special import factorial
 from scipy.optimize import fmin_l_bfgs_b as optim
 
-
 os.chdir(os.path.expanduser("~/rough_code/"))
+seed(42)
 
-from fit_nbinom import *  # authored: Gokcen Eraslan
+from fit_nbinom import *  # => authored: Gokcen Eraslan
+
+#############################################################################
+################################ CAUTION ####################################
+#############################################################################
+
+# there is an error in my code,  genes in a single individual :
+    
+# DO NOT FOLLOW a negative binomial distribution, 
+# instead, is one single gene across subjects that has this distribution
+
+# DO NOT USE THIS CODE ANYMORE, but I leave it here to remember this mistake 
+#############################################################################
+
 
 # NEGATIVE BINOMIAL : 
 # p (X = n ) = (n-1 k-1) (1-p )**n-k * p **k  is the counts distribution law
@@ -207,20 +221,22 @@ vararr = []
 for s in range(nsubjsplus):
     meanarr.append(np.mean(arrfill[:,s]))
     vararr.append(np.var(arrfill[:,s]))
-    
-plt.plot(meanarr,vararr, "o")
+ 
+if arrfill.min() > 0:
+    print(arrfill.min())
+    minv = arrfill.min()   
+    arrtest = arrfill - minv
+plt.plot(meanarr,vararr, "o", color="purple")
+plt.xlabel("mean")
+plt.ylabel("variance")
+plt.title(f"simulated counts ({nsubjsplus} subjects,  {NGENESFINAL} genes)")
 plt.plot()
-
-#picksubset with highest m
-thevars = arrfill.var(axis=1)
-
 
 print("normalizing (CPM)")
 
 
 
 """
-
 subjmu_ = [150, 200]
 # means by subject from a uniform distribution
 means_subs_sim =  np.random.uniform(low=subjmu_[0], high=subjmu_[1], size=initialN)
