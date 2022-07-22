@@ -20,3 +20,8 @@ I used it like this : cd $tableslocation; for i in *.tsv; do head -n 1 $i > test
 
 More serious examples with explanations : [here](https://www.theunixschool.com/2012/11/awk-examples-insert-remove-update-fields.html)
 
+
+#### simple but important
+Rights for accession and execution, all my group:
+chmod g+r /home/jgalvis
+chmod g+rx /home/jgalvis

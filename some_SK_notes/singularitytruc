@@ -1,0 +1,20 @@
+ # get latest Python
+singularity pull --disable-cache docker://python
+
+# Create virtualenv
+./python_latest.sif python -m venv my_venv
+
+# Install numpy in virtualenv
+./python_latest.sif my_venv/bin/pip install numpy
+
+# Create Python script
+cat > my_script.py << EOF
+import sys
+import numpy
+ 
+print(sys.version)
+print(numpy.__version__)
+EOF
+
+# run script
+./python_latest.sif my_venv/bin/python my_script.py
