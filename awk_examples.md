@@ -1,3 +1,9 @@
+sum column three, excluding first line (NR > 1):
+```
+awk -F'\t' 'NR > 1 {sum+=$3} END {print sum}' $MYFILE
+```
+
+
 Add +1 to third column : 
 ```
 cd ldh_multi/mulitplex/coex/
@@ -19,6 +25,8 @@ I used it like this : cd $tableslocation; for i in *.tsv; do head -n 1 $i > test
 
 
 More serious examples with explanations : [here](https://www.theunixschool.com/2012/11/awk-examples-insert-remove-update-fields.html)
+
+
 
 
 #### simple but important
