@@ -1,0 +1,4 @@
+- how to add ellipses to matplotlib scatter
+https://rayblick.gitbooks.io/my-python-scrapbook/content/analysis/plotting/scatterplot_ellipse.html
+(should work also with seaborn (?))
+

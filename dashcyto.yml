@@ -1,0 +1,21 @@
+name: dashcyto
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9.12
+  - pip  
+  - numpy
+  - pandas
+  - pyyaml
+  - scikit-learn
+  - scipy
+  - matplotlib
+  - seaborn
+  - pyreadr  
+  - networkx
+  - pip:
+    - dash-cytoscape==0.2.0
+    - fuzzywuzzy
+
+  

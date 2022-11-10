@@ -18,3 +18,11 @@ EOF
 
 # run script
 ./python_latest.sif my_venv/bin/python my_script.py
+
+
+# MRI database : 
+AOMIC : https://nilab-uva.github.io/AOMIC.github.io/
+nilab-uva.github.io
+AOMIC: the Amsterdam Open MRI Collection
+Three datasets with multimodal 3T MRI data and detailed demographics and psychometric variables
+
