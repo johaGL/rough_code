@@ -1,0 +1,117 @@
+---
+title : "oh"
+output : html_document
+runtime: shiny
+
+---
+
+```{r setup, include=FALSE}
+library(rmarkdown)
+library(knitr)
+library(ggplot2)
+library(shiny)
+knitr::opts_knit$set(global.device = TRUE)
+options(knitr.duplicate.label = "allow")
+#knitr::opts_chunk$set(echo = params$printcode)
+```
+# mytitle {.tabset}
+## whatever
+
+
+
+```{r , echo = FALSE}
+
+
+```
+
+
+
+```{r booh}
+
+dfo = data.frame("names"=seq(1,200,by=1))
+dfo$alpha = rnorm(200, 0.7, 3)
+dfo$beta = rnorm(200, -0.3, 1.5)
+label = "examples : ABCA1, TUBB3, SLC16A1"
+#shiny::textInput("booh", label, value = "", width = NULL, placeholder = NULL)
+
+shiny::inputPanel(
+  shiny::actionButton("Plo", "renderit"),
+  shiny::textInput("booh", label, value = "", width = NULL)
+)
+
+```
+
+
+
+```{r, echo = FALSE}
+renderPlot({
+  plot(x=c(10,9,8), y=c(6,5,4))
+  }, outputArgs = list(width = "200px", height = "100px")
+)
+
+```
+
+## ff
+```{r diseased, echo=FALSE}
+# renderUI({
+#   atitl = input$booh
+#   render_textile(as.character(atitl))
+#   #eventReactive(input$Plo, {
+#   #  plot(x=c(10,9,8), y=c(6,5,4))
+#   #})
+#   
+# })
+library(shiny)
+selectInput("whichtip", label = "Select puzzle:",
+            choices = c("tip1", "tip2"))
+
+actionButton("tip", "Tip")
+
+show_tip <- eventReactive(input$tip, {
+    tip <- paste0("stupid", input$whichtip)
+  })
+
+
+```
+
+```{r likeui, echo=FALSE}
+library(shiny)
+renderUI({
+  output$show_tip <- eventReactive(input$tip, {
+    tip <- paste0("stupid", input$whichtip)
+  })
+  
+})
+```
+
+```{r}
+ui = fluidPage(
+    selectInput("iik", "Region:",
+                choices = c("alpha","beta")),
+    plotOutput("badplot")
+  )
+
+server = function(input, output) {
+  output$badplot = renderPlot({
+    plot(x=c(1,2),y=c(2,1), main=input$iik)
+  })
+}
+
+shinyApp(ui, server)
+
+```
+
+
+
+
+## fixed plots
+```{r, echo=FALSE}
+mychoice = "alpha"
+print(eval(as.symbol(mychoice)))
+
+ggplot(dfo, aes(x=eval(as.symbol(mychoice)))) + 
+  geom_histogram(aes(y=after_stat(density)), binwidth=.2) +
+  labs(x=mychoice, title="ok")
+
+
+```

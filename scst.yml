@@ -1,0 +1,15 @@
+name: scst # single cell and spatial transcriptomics
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.2.2
+  - r-gprofiler2
+  - r-biocmanager
+  - bioconductor-complexheatmap
+  - bioconductor-fgsea
+  - r-seurat=4.3.0
+
+  
+  # https://community.rstudio.com/t/why-not-r-via-conda/9438/4
