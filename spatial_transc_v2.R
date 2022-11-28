@@ -22,6 +22,7 @@ library(tidyverse)
 mywdir = "~/"
 setwd(mywdir)
 wdadir = "visium_coauthorsBMC/10XVisium_2/10XVisium_2/"
+ODIR="~/spatial_hei/"
 odirqc = paste0(ODIR,"QC/")
 odirclus = paste0(ODIR,"clus/")
 dir.create(odirqc)
@@ -143,34 +144,7 @@ FeaturePlot_function <- function(rds_file){
 
 
 ## start
-ODIR="~/spatial_hei/"
-px = "UKF242"
-tiss = "T"
 
-px_tiss = paste0(px,"_", tiss)
-
-pxdir = paste0("#",px_tiss,"_ST/")
-print(pxdir)
-print(list.dirs(paste0(wdadir, pxdir, "outs/")))
-sobj = prep_seu(thedir=paste0(wdadir, pxdir, "outs/"),
-               slicename=str_replace(px_tiss, "_", ""),
-               patient=px, tissue=tiss)
-
-saveRDS(sobj, paste0(ODIR, px_tiss))
-
-#print(Sys.glob(paste0(wdadir, "/*/" )))
-
-
-sobj = QC_figures_function(paste0(ODIR, px_tiss), odirqc)
-saveRDS(sobj, paste0(ODIR,px_tiss,"_qc"))
-
-
-
-sobj = clustering_function(paste0(ODIR, px_tiss, "_qc") , odirclus)
-saveRDS(sobj, paste0(ODIR,px_tiss,"_clus"))
-
-
-FeaturePlot_function(paste0(ODIR,px_tiss,"_clus"))
 
 # spatially variable features ? ==> Todo?
 
@@ -178,10 +152,44 @@ FeaturePlot_function(paste0(ODIR,px_tiss,"_clus"))
 ###################
 # several patients : 7
 ###################                
-patients_li = list("UFK242" = c("C","T"), "UFK248"=c("C", "T"),
-                     "UFK256"= c("C", "TC", "TI") ,
-                   "UFK259"= c("C","T"),
-                   "UFK265"=c("C","T"), "UFK313"=c("C","T"),  "UFK334"=c("C","T"))     
+patients_li = list("UKF242" = c("C","T"), "UKF248"=c("C", "T"),
+                     "UKF256"= c("C", "TC", "TI") ,
+                   "UKF259"= c("C","T"),
+                   "UKF265"=c("C","T"), "UKF313"=c("C","T"),  "UKF334"=c("C","T")
+                   )    
+
+
+for (px in names(patients_li)){
+  tissues = patients_li[[px]]
+  for (tiss in tissues){
+    
+   
+    px_tiss = paste0(px,"_", tiss)
+    
+    pxdir = paste0("#",px_tiss,"_ST/")
+
+    sobj = prep_seu(thedir=paste0(wdadir, pxdir, "outs/"),
+                    slicename=str_replace(px_tiss, "_", ""),
+                    patient=px, tissue=tiss)
+    
+    saveRDS(sobj, paste0(ODIR, px_tiss))
+    
+    #print(Sys.glob(paste0(wdadir, "/*/" )))
+    
+    
+    sobj = QC_figures_function(paste0(ODIR, px_tiss), odirqc)
+    saveRDS(sobj, paste0(ODIR,px_tiss,"_qc"))
+    
+    
+    
+    sobj = clustering_function(paste0(ODIR, px_tiss, "_qc") , odirclus)
+    saveRDS(sobj, paste0(ODIR,px_tiss,"_clus"))
+    
+    
+    FeaturePlot_function(paste0(ODIR,px_tiss,"_clus"))
+    
+  }
+}
 
 
 
