@@ -1,3 +1,71 @@
+def red_cv_g_bytime_dffull(names_compartments, dirtmpdata, tableAbund,
+                       namesuffix, metadata, levelstimepoints_):
+    def give_geommeans(df_red, red_meta, t):
+        condilist = red_meta["condition"].unique()
+        tmpdico = dict()
+        for condi in condilist:
+            samplesthiscondi = red_meta.loc[red_meta['condition'] == condi, "sample"]
+            subdf = df_red[samplesthiscondi]
+            subdf = subdf.assign(geomean=subdf.apply(gmean, axis=1))
+            # print(subdf.head())
+            tmpdico[f"{condi}_{t}_geomean"] = subdf.geomean.tolist()
+
+        dfout = pd.DataFrame.from_dict(tmpdico)
+        dfout.index = df_red.index
+
+        return dfout
+    def give_coefvar_bycond(df_red, red_meta, t):
+        condilist = red_meta["condition"].unique()
+        tmpdico = dict()
+        for condi in condilist:
+            samplesthiscondi = red_meta.loc[red_meta['condition'] == condi, "sample"]
+            subdf = df_red[samplesthiscondi]
+            subdf = subdf.assign(CV=subdf.apply(compute_cv, axis=1))
+            # print(subdf.head())
+            tmpdico[f"{condi}_{t}_CV"] = subdf.CV.tolist()
+
+        dfout = pd.DataFrame.from_dict(tmpdico)
+        dfout.index = df_red.index
+        return dfout
+
+    # calculate and save : reduced data, coefficient of variation, splitting by timepoint, here only T0h test
+    ddof = 0
+    for co in names_compartments.values():
+        df = pd.read_csv(f"{dirtmpdata}{tableAbund}_{namesuffix}_{co}.tsv", sep='\t', header=0, index_col=0)
+
+        metada_sel = metadata.loc[metadata['short_comp']==co, :]
+        #get reduced rows , cv and geommeans,
+        for t in ['T0h']: # for t in levelstimepoints_
+            print(t)
+            samples_t = metada_sel.loc[metada_sel['timepoint'] == t, "sample"]
+            samples_t = sorted(samples_t)
+            df_t = df[samples_t]
+            rownames = df_t.index
+            df_t.index = range(len(rownames))#  index must be numeric because compute reduction accepted
+            df_t_red = compute_reduction(df_t, ddof)
+            df_t_red.index = rownames
+
+            #outfilereduced = f"{dirtmpdata}abund_reduced_{t}_{co}.tsv"
+            # df_t_red.to_csv(outfilereduced, header=True, sep='\t')
+            # add coefficient of variation, by condition
+            red_meta = metada_sel.loc[metada_sel["sample"].isin(df_t_red.columns) ,:]
+
+            df_cv = give_coefvar_bycond(df_t_red, red_meta, t )
+            df_t_red_cv = pd.merge(df_t_red, df_cv , left_index=True, right_index=True)
+            #outfi_coefvar = f"{dirtmpdata}abund_reduced_coefvar_{t}_{co}.tsv"
+            #df_t_red_cv.to_csv(outfi_coefvar)
+
+            # save intervals overlap # TODO?... but here we have 3 conditions (in this timepoint)
+
+            # save geometric means table, and the ratio
+            df_t_red_geomean = give_geommeans(df_t_red, red_meta, t)
+            print(df_t_red_geomean.head())
+            dfo1 = pd.merge(df_t_red_cv, df_t_red_geomean, left_index=True, right_index=True)
+            outfi_geomean = f"{dirtmpdata}abund_reduced_geomean_{t}_{co}.tsv"
+            dfo1.to_csv(outfi_geomean, header=True)
+    return 0
+
+
 # def getspecificmk(prop_df, isotosrowdata, selmk):
 #     """
 #     obtain proportion of CI for specified label selmk

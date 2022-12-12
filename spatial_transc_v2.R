@@ -86,10 +86,6 @@ QC_figures_function <- function(rds_file, odirqc){
   print(p1 + p2)
   dev.off()
   
-  # Gene expression visualization
-  pdf(paste0(odirqc,"spatialFeaturePlot_",name_seu_object,".pdf"),width = 10, height = 10)
-  print(SpatialFeaturePlot(spseu, features = c( "GFAP", "OSP", "TUBB3")))
-  dev.off()
   
   return(spseu)
 }
@@ -143,56 +139,106 @@ FeaturePlot_function <- function(rds_file){
 }
 
 
-## start
-
-
-# spatially variable features ? ==> Todo?
+# spatially variable features  ==> Ask if necessary for these tissue slides
 
 
 ###################
-# several patients : 7
+# FIRST GROUP OF PATIENTS : 7
+# 242 248 256 259 265 313 334
 ###################                
-patients_li = list("UKF242" = c("C","T"), "UKF248"=c("C", "T"),
-                     "UKF256"= c("C", "TC", "TI") ,
-                   "UKF259"= c("C","T"),
-                   "UKF265"=c("C","T"), "UKF313"=c("C","T"),  "UKF334"=c("C","T")
-                   )    
+# patients_li = list("UKF242" = c("C","T"), "UKF248"=c("C", "T"),
+#                      "UKF256"= c("C", "TC", "TI") ,
+#                    "UKF259"= c("C","T"),
+#                    "UKF265"=c("C","T"), "UKF313"=c("C","T"),  "UKF334"=c("C","T")
+#                    )    
+# note : "UKF265"=c("C","T"), ==> T has problems !! 
 
+# patients_li = list( "UKF313"=c("C","T"),  "UKF334"=c("C","T")) # ok, yielded results
 
-for (px in names(patients_li)){
-  tissues = patients_li[[px]]
-  for (tiss in tissues){
-    
-   
-    px_tiss = paste0(px,"_", tiss)
-    
-    pxdir = paste0("#",px_tiss,"_ST/")
+patients_li = list("UKF265"=c("T"))  # running alone the problematic one
 
-    sobj = prep_seu(thedir=paste0(wdadir, pxdir, "outs/"),
-                    slicename=str_replace(px_tiss, "_", ""),
-                    patient=px, tissue=tiss)
-    
-    saveRDS(sobj, paste0(ODIR, px_tiss))
-    
-    #print(Sys.glob(paste0(wdadir, "/*/" )))
-    
-    
-    sobj = QC_figures_function(paste0(ODIR, px_tiss), odirqc)
-    saveRDS(sobj, paste0(ODIR,px_tiss,"_qc"))
-    
-    
-    
-    sobj = clustering_function(paste0(ODIR, px_tiss, "_qc") , odirclus)
-    saveRDS(sobj, paste0(ODIR,px_tiss,"_clus"))
-    
-    
-    FeaturePlot_function(paste0(ODIR,px_tiss,"_clus"))
-    
+rerun_firstgroup = FALSE
+if (rerun_firstgroup){
+  for (px in names(patients_li)){
+    tissues = patients_li[[px]]
+    for (tiss in tissues){
+      
+      
+      px_tiss = paste0(px,"_", tiss)
+      
+      pxdir = paste0("#",px_tiss,"_ST/")
+      
+      sobj = prep_seu(thedir=paste0(wdadir, pxdir, "outs/"),
+                      slicename=str_replace(px_tiss, "_", ""),
+                      patient=px, tissue=tiss)
+      
+      saveRDS(sobj, paste0(ODIR, px_tiss))
+      
+      #print(Sys.glob(paste0(wdadir, "/*/" )))
+      
+      sobj = QC_figures_function(paste0(ODIR, px_tiss), odirqc)
+      saveRDS(sobj, paste0(ODIR,px_tiss,"_qc"))
+      
+      sobj = clustering_function(paste0(ODIR, px_tiss, "_qc") , odirclus)
+      saveRDS(sobj, paste0(ODIR,px_tiss,"_clus"))
+      
+      #FeaturePlot_function(paste0(ODIR,px_tiss,"_clus"))
+      
+    }
   }
 }
 
 
+# problematic sample from this first group: 265_T 
+# 265_T : quality control and  clustering failed: REASON: bad quality
+# `Error in make_cell_attr(umi, cell_attr, latent_var, batch_var, latent_var_nonreg, : 
+# cell attribute "log_umi" contains NA, NaN, or infinite value`
 
+
+
+##############################
+# SECOND GROUP : TUMOR only and cortex only
+##############################
+# "UKF241" = c("C"), 
+# "UKF243" = c("T"), "UKF251" = c("T"),
+# "UKF255" = c("T"), "UKF260" = c("T"), "UKF262" = c("T"),
+patients_g2 = list(    "UKF266" = c("T"), "UKF269" = c("T"), "UKF275" = c("T"), 
+                   "UKF296" = c("T"), "UKF304" = c("T"))
+
+for (px in names(patients_g2)){
+  tissues = patients_g2[[px]]
+  for (tiss in tissues){
+    
+    tryCatch({
+      px_tiss = paste0(px,"_", tiss)
+      print(px_tiss)
+      
+      pxdir = paste0("#",px_tiss,"_ST/")
+      
+      sobj = prep_seu(thedir=paste0(wdadir, pxdir, "outs/"),
+                      slicename=str_replace(px_tiss, "_", ""),
+                      patient=px, tissue=tiss)
+      
+      saveRDS(sobj, paste0(ODIR, px_tiss))
+      
+      #print(Sys.glob(paste0(wdadir, "/*/" )))
+      
+      sobj = QC_figures_function(paste0(ODIR, px_tiss), odirqc)
+      saveRDS(sobj, paste0(ODIR,px_tiss,"_qc"))
+      
+      sobj = clustering_function(paste0(ODIR, px_tiss, "_qc") , odirclus)
+      saveRDS(sobj, paste0(ODIR,px_tiss,"_clus"))
+      
+      #FeaturePlot_function(paste0(ODIR,px_tiss,"_clus"))
+      
+      
+    },error=function(cond){
+      msg <- conditionMessage(cond)
+      next
+    })
+    
+  }
+}
 # other packages I would see in future projects: 
 # vissE : think about this pathway enrichment in ST
 # https://www.biorxiv.org/content/10.1101/2022.03.06.483195v1.full

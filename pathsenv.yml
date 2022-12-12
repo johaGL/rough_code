@@ -15,6 +15,7 @@ dependencies:
   - pyreadr  # from channel conda-forge
   - networkx
   - biopython # for kegg queries, if needed
+  - requests
   - pip:
     - fuzzywuzzy
 
