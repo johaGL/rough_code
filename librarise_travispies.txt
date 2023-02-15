@@ -1,0 +1,16 @@
+shinyFeedback
+shinyjs
+shinyFiles
+DT
+colourpicker
+here
+vroom
+forcats
+dplyr
+tibble
+readr
+tidyr
+ggplot2
+extrafont
+extrafontdb
+

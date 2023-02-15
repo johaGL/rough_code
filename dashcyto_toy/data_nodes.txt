@@ -1,0 +1,5 @@
+Los Angeles	10
+Montreal	20
+Vancouver	30
+Houston	40
+Bordeaux	50

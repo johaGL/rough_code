@@ -1,0 +1,24 @@
+name: travispies
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - r-base=4.2.2
+  - r-shiny
+  - r-shinyFeedback
+  - r-shinyjs
+  - r-shinyFiles
+  - r-DT
+  - r-colourpicker
+  - r-here
+  - r-vroom
+  - r-forcats
+  - r-dplyr
+  - r-tibble
+  - r-readr
+  - r-tidyr
+  - r-ggplot2
+  - r-extrafont
+  - r-extrafontdb
+
