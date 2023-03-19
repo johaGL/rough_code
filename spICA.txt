@@ -1,0 +1,6 @@
+conda activate spica
+R
+-> devtools::install('path_to_spica', dependencies=TRUE; upgrade=FALSE)
+
+options(browser="firefox")
+SpICA::launchShiny()

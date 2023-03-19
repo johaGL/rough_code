@@ -1,0 +1,5 @@
+/mnt/cbib/thesis_gbm
+
+# the processed seurat object:
+scp /home/johanna/spatial_hei_results/UKF243_T_clus jgalvis@bb8.cbib.u-bordeaux.fr:/mnt/cbib/thesis_gbm/spatial_heiland
+scp -r /home/johanna/spatialtranscripto_germanteam/10XVisium_2/10XVisium_2/#UKF243_T_ST jgalvis@bb8.cbib.u-bordeaux.fr:/mnt/cbib/thesis_gbm/spatial_heiland
