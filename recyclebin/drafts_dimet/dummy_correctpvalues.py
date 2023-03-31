@@ -1,3 +1,6 @@
+from __future__ import division
+import sys
+
 import numpy as np
 import pandas as pd
 import statsmodels.stats.multitest as smm
@@ -22,12 +25,93 @@ df = pd.DataFrame({"rownb": [i for i in range(len(kn))],
 df = compute_p_adjusted(df, "fdr_bh")
 print(df)
 
+
+#####
+# from https://stackoverflow.com/questions/25185205/calculating-adjusted-p-values-in-python
+def fdr(pvals):
+    tmp = list()
+    from scipy.stats import rankdata
+    ranked_p_v = rankdata(pvals)
+    print(ranked_p_v)
+    #fdr = ( pvals * len(pvals)) / ranked_p_v
+    for i in range(len(pvals)):
+        tmp.append((pvals[i] * len(pvals)) / ranked_p_v[i])
+    fdr = np.array(tmp)
+    fdr[fdr > 1] = 1
+    return fdr
+
+
+ehe = fdr(np.array(kn))
+print(ehe,  "<======== by hand, 1")
+
+# --
+# from : https://rosettacode.org/wiki/P-value_correction#Python
+
+def pminf(array):
+    x = 1
+    pmin_list = []
+    N = len(array)
+    for index in range(N):
+        if array[index] < x:
+            pmin_list.insert(index, array[index])
+        else:
+            pmin_list.insert(index, x)
+    return pmin_list
+#end function
+
+
+def cumminf(array):
+    cummin = []
+    cumulative_min = array[0]
+    for p in array:
+        if p < cumulative_min:
+            cumulative_min = p
+        cummin.append(cumulative_min)
+    return cummin
+#end
+
+def cummaxf(array):
+    cummax = []
+    cumulative_max = array[0]
+    for e in array:
+        if e > cumulative_max:
+            cumulative_max = e
+        cummax.append(cumulative_max)
+    return cummax
+#end
+
+def order(*args):
+    if len(args) > 1:
+        if args[1].lower() == 'false':# if ($string1 eq $string2) {
+            return sorted(range(len(args[0])), key = lambda k: args[0][k])
+        elif list(args[1].lower()) == list('true'):
+            return sorted(range(len(args[0])), key = lambda k: args[0][k], reverse = True)
+        else:
+            print("bad")
+            sys.exit()
+    elif len(args) == 1:
+        return sorted(range(len(args[0])), key = lambda k: args[0][k])
+
+o = order(kn, 'TRUE')
+cummin_input = []
+for index in range(len(kn)):
+    cummin_input.insert(index, (index + 1) * kn[o[index]])
+cummin = cumminf(cummin_input)
+pmin = pminf(cummin)
+ro = order(o)
+qvalues = [pmin[i] for i in ro]
+
+print(qvalues, " <================ by hand, 2")
+
+
+# --
+
 ### ####
 print("\nUsing some real values")
 prekn = [0.586519014724443 , 0.609126394687426 , 0.490666135722899, 0.425655265804451, \
     0.239121611248683, 0.516810415015153, 1, 0.585822774747661 ]
 
-kn = np.array(prekn).round(2)
+kn = np.array(prekn).round(6)
 print(kn)
 rej_bool, pval_arr = smm.multipletests(kn, alpha=0.05, method="fdr_bh")[:2]
 print(pval_arr)

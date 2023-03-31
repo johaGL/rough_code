@@ -30,13 +30,11 @@ def compute_ratios_p_permutations(arr_united, p_size) -> list:
         tmp_gr = np.delete(gr, i, axis=0)
         for tup2 in tmp_gr:
             ratiosall.append(
-               np.nanmean(np.array(tup1)) / np.nanmean(np.array(tup2))
+               compute_gmean_nonan(np.array(tup1)) / compute_gmean_nonan(np.array(tup2))
             )
         i += 1
     out_ratios = [i for i in ratiosall if i is not np.nan]
     return out_ratios
-
-
 
 
 def scale_to_interval(array, targ_max, targ_min):

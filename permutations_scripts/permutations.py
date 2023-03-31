@@ -6,11 +6,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import itertools
 
-geom_meansA = np.array([94,26,58,75,31,42,63,87,62,59,37,68,20,67,29,43,61,55,77,94,14])
-print(len(geom_meansA))
-geom_meansB = 0
-ratios1 = np.array([ 0.000002, 0.002, 0.1, 0.95, 1.02, 0.6, 0.99, 0.94, 1,1.15, 1.22,
-              1.4, 1.35, 1.05, 1.09, 0.99, 0.04, 1, 3, 5, 7])
+
+"""
+first experiment only using arithmetic mean
+"""
 
 A = {'met1':[7,9, 2], 'met2':[9,np.nan,2], 'met3':[100,50,69]}
 B = {'met1':[9,12, 5], 'met2':[11,15,16], 'met3':[10,np.nan,2]}
