@@ -4,6 +4,26 @@ import os
 import prepare as prp
 
 
+def plot_overlap_hist(df_overls, colname_symetric, colname_assymetric, fileout):
+    import seaborn as sns
+    import matplotlib as plt
+    """just for debugging or other tests"""
+    values_sym = df_overls[colname_symetric]
+    a = pd.DataFrame({'value' : values_sym,
+                      'type_overlap': ["symm" for i in range(len(values_sym))] })
+    vasym = df_overls[colname_assymetric]
+    b = pd.DataFrame({'value': vasym,
+                      'type_overlap': ["assym" for i in range(len(vasym))]})
+    dfplotov = pd.concat([a,b], ignore_index=True, axis=0)
+
+    with sns.axes_style("darkgrid"):
+        sns.displot(data=dfplotov, x = 'value', hue='type_overlap',
+                       kde=False)
+        plt.savefig(fileout)
+    plt.close()
+    return 0
+
+
 # # do pytest in tests/test_prepare, needs pytest and pytest-cov and mypy
 def test_excelsheets2frames_dic():
     configfile = "examples/toy1/a001/config-1-001.yml"
