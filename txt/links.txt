@@ -1,0 +1,3 @@
+links misc
+
+https://stackoverflow.com/questions/11517986/indicating-the-statistically-significant-difference-in-bar-graph

@@ -5,3 +5,4 @@ channels:
   - bioconda
 dependencies:
   - snakemake=7.8.5
+  - conda-forge::jupyter
