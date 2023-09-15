@@ -122,15 +122,53 @@ From here I will continue with the latest version 0.6.2
 
 Edit the column `deepcell` in the 'panel.csv' file. For specific selected markers of your choice (not for all markers),  `deepcell` must contain:
  `1` if is nuclear marker
- `2` if is cellular membrane marker
+ `2` if is cellular membrane marker or cytoplasm marker
  
 Then run:
 
 ```
 steinbock preprocess imc images --hpf 50 
 ```
+## 4. Segmentation
+```
+steinbock segment deepcell --app mesmer
+```
+
+## 5. Single cell extraction (intensities folder)
+
+```
+steinbock measure intensities
+steinbock measure regionprops
+
+```
+
+## 7. Data export
+
+```
+steinbock export ome
+steinbock export csv
+steinbock export fcs
+steinbock export anndata
+
+```
+Error when trying to export as graph (maybe not needed) : 
+steinbock export graphs
+Usage: steinbock export graphs [OPTIONS]
+Try 'steinbock export graphs --help' for help.
+Error: Invalid value for '--graph': Directory 'graphs' does not exist.
 
 
+-------------
+# R part
 
+   
+------------------------------
+# Other useful ressources
+
+
+Tutorial IMC data analysis
+https://bodenmillergroup.github.io/IMCDataAnalysis/prerequisites.html
+Jonas Windhager, Bernd Bodenmiller, Nils Eling (2020). An end-to-end workflow for multiplexed image processing and analysis. 
+    bioRxiv, doi: 10.1101/2021.11.12.468357
 
 
