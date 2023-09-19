@@ -120,26 +120,29 @@ From here I will continue with the latest version 0.6.2
 
 **Manual step**
 
-Edit the column `deepcell` in the 'panel.csv' file. For specific selected markers of your choice (not for all markers),  `deepcell` must contain:
+Edit the column `deepcell` in the 'panel.csv' file:
+Fill, for specific markers (seek the help of an expert), the column `deepcell` with:
  `1` if is nuclear marker
  `2` if is cellular membrane marker or cytoplasm marker
+ of leave empty if none of above.
  
 Then run:
 
 ```
 steinbock preprocess imc images --hpf 50 
 ```
+
 ## 4. Segmentation
+
 ```
 steinbock segment deepcell --app mesmer
 ```
 
-## 5. Single cell extraction (intensities folder)
+## 5. Single cell extraction (folders: intensities, regionprops)
 
 ```
 steinbock measure intensities
 steinbock measure regionprops
-
 ```
 
 ## 7. Data export
@@ -149,18 +152,19 @@ steinbock export ome
 steinbock export csv
 steinbock export fcs
 steinbock export anndata
+mkdir graphs
+steinbock export graphs
 
 ```
-Error when trying to export as graph (maybe not needed) : 
-steinbock export graphs
-Usage: steinbock export graphs [OPTIONS]
-Try 'steinbock export graphs --help' for help.
-Error: Invalid value for '--graph': Directory 'graphs' does not exist.
+Error when trying to export as graph: 
+nothing is  saved into `graphs/`, and another empty dir is generated `graphs_export/`
 
 
 -------------
 # R part
 
+see the folder
+`$THESISDIR/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_treat_r`
    
 ------------------------------
 # Other useful ressources
