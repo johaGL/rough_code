@@ -44,7 +44,7 @@ If sucessful, you can see that **deploy** has a green check symbol in **Actions*
 
 4. **Conda update**
 
-Normally, the **Bioconda bot** will automatically detect the new PyPI package release and make a PR (pull request).
+Normally, the **Bioconda bot** will automatically detect the new PyPI package release and make a PR (pull request). Go visit the PR list of https://github.com/bioconda/bioconda-recipes/
 Be patient, this can take time, it will make deployment and internal  tests (up to 40 min)
 This PR is validated by a maintainer, without our intervention. 
 If the validation does not occur in ~4 hours, ask Ben if he can contact Helge or Bjorn.
