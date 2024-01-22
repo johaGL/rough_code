@@ -9,6 +9,10 @@ The more delicate part is the PyPI update.
 
 ## **PyPI update**
 
+0. Terminal and PyCharm:
+   - In the terminal, run flake8 (make sure flake8 AND flake8-import-order packages are both installed) across all the .py files of the package.
+   - Correct the errors highlighted by flake8, in all the .py files in PyCharm.
+
 In the GitHub repo: 
 
 1.  Update the `pyproject.toml` file in the repo, with the version **to be released**:
@@ -39,7 +43,10 @@ So in most of the cases **it is not necessary to do anything more**.
 
 Note: only if the maintainers ask to do yourself the PR, here the instructions to do the PR manually:
 
-- 
+
+--------------------------------
+
+_Exceptional_ 
 
 	Follow the example as in https://bioconda.github.io/contributor/guidelines.html?highlight=bioconductor#hashes  how to get the "shasum":  `wget -O- $URL | shasum -a 256`.
 
