@@ -1,56 +1,68 @@
 # Steps followed in my local machine to install Steinbock pipeline
 
-Steinbock pipeline is dedicated to pre-treatment + segmentation and clustering of spatial multiplexed proteomics data
+
 
 @author of this .md document : Johanna Galvis
 
 
+Steinbock pipeline is dedicated to pre-treatment + segmentation of spatial multiplexed proteomics data, obtained by Imaging Mass Cytometry (IMC) technnology.
+
+We have received Hyperion data from Montpellier. These files are not heavy and it is easy to work locally. I did not work in the server because we cannot use Docker inthere. 
+
+
+# Installing steinbock
+
 Link :   https://bodenmillergroup.github.io/steinbock/v0.6.2/install/docker/
+
+No need to do hard installing, because the pipeline is contenerized in a docker image.
 
 I had installed docker already. See https://docs.docker.com/engine/install/linux-postinstall/
 
-I created the raw directory inside:
+I created the  directory :
 ```
 $THESISDIR/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/
 ```
 which is my `$MYWDIR`
 
-Inside that `raw/` folder  there are the .mcd files and .txt files of the acquisitions: 
+The files that we received from the lab at Montpellier are:
+```
+20230322_Tissu_Angiogenic_Area.pptx
+20230322_Tissu_Hypoxic_Area.pptx
+20230322_Tissu_Invasive_Area.pptx
+23-IMC-M-03_ExtLLC-Daubon-ROI_AngiogenicArea_2.txt
+23-IMC-M-03_ExtLLC-Daubon-ROI_HypoxicArea-02_5.txt
+23-IMC-M-03_ExtLLC-Daubon-ROI_HypoxicArea_3.txt
+23-IMC-M-03_ExtLLC-Daubon-ROI_InvasiveArea-02_4.txt
+23-IMC-M-03_ExtLLC-Daubon-ROI_InvasiveArea_1.txt
+23-IMC-M-03_ExtLLC-Daubon-ROI.mcd
+Seg_Mesmer_Tutorial_Windows.docx
+```
+
+
+I created the  `raw/` directory inside $MYWDIR and pasted there the .txt files which are the individual acquisitions. 
+
+**I had to manually shorten their file names to yield readable output file names**: 
 
 ```
 $MYWDIR
 └──raw
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_AngiogenicArea_2.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_HypoxicArea-02_5.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_HypoxicArea_3.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_InvasiveArea-02_4.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_InvasiveArea_1.txt
-	└── 23-IMC-M-03_ExtLLC-Daubon-ROI.mcd
+	├── AngiogenicArea_2.txt
+	├── HypoxicArea-02_5.txt
+	├── HypoxicArea_3.txt
+	├── InvasiveArea-02_4.txt
+	└── InvasiveArea_1.txt
 
 ```
+Note: the .mcd file `23-IMC-M-03_ExtLLC-Daubon-ROI.mcd`, that was also provided, has the same information that the four .txt files, however as I had to shorten the names of the .txt files to be able to obtain clear names in the output files, I had to omit the .mcd file. In any case, the information aqcuisitions in the .mcd file are stored as individual acquisitions in the .txt files so there is no loss of information (see https://bodenmillergroup.github.io/imcRtools/reference/readSCEfromTXT.html)
 
-# Set up the command
-
-### with the version   0.15.0 of Steinbock
-
-First I tested version 0.15.0 as it was used by the platform as explained in the `Seg_Mesmer_Tutorial_Windows.docx`  file that they attached to the results:
+# Using the pipeline
 
 
-```
-sudo docker run -v /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.15.0
+# 1. Set up the command
 
-```
 
-Docker automatically started the download of the image with a message "Pulling from bodenmillergroup/steinbock..."
 
-Then create the alias for the full docker command, to be able to launch `steinbock [OPTIONS]` in terminal:
-
-```
-alias steinbockV015="sudo docker run -v /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.15.0"
-
-```
-
-### Or with latest version 0.6.2: 
+###  with latest version 0.6.2: 
 
 
 ```
@@ -67,53 +79,30 @@ alias steinbock="sudo docker run -v /home/johanna/spatial_thesis/data_and_analys
 
 ```
 
-
-# Using the pipeline
-
-## 1. Check inputs
-
-Verify your folder structure, reminder:  
-
-```
-
-$MYWDIR
-└──raw
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_AngiogenicArea_2.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_HypoxicArea-02_5.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_HypoxicArea_3.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_InvasiveArea-02_4.txt
-	├── 23-IMC-M-03_ExtLLC-Daubon-ROI_InvasiveArea_1.txt
-	└── 23-IMC-M-03_ExtLLC-Daubon-ROI.mcd
-```
+From here I will continue with the latest version 0.6.2, but older versions are available if needed. See Note at the end of this file.
 
 
-If not existent, create a empty "panel file" in `raw/` folder, `panel_raw.csv`:
+
+## 2.. Check inputs
+
+If there is no `panel.csv` within the **parent** folder of `raw/`, it must be generated by steinbock: 
+
+**a.** first, manually create a empty "panel file" inside the `raw/` folder, `panel_raw.csv` (**manual step**):
 
 
 | chanel | name | keep | ilastik | deepcell |
 |--------|------|------|---------|----------|
 
 
-## 2. generate the panel.csv file
 
-Generate the panel.csv in the **parent** folder of the `raw/` folder.
+**b.** second, generate the panel.csv in the **parent** folder of the `raw/` folder.
 
-### with the version   0.15.0 of Steinbock
-
-```
-steinbockV015 preprocess imc panel --imcpanel /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/raw/panel_raw.csv -o panel.csv
-```
-
-### Or with latest version 0.6.2: 
-
-Not `--o` but `--dest` argument for the output file name: 
 
 ```
 steinbock preprocess imc panel --imcpanel /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/raw/panel_raw.csv --dest panel.csv
 ```
 
-
-From here I will continue with the latest version 0.6.2
+A panel.csv file will be now present in the parent folder of the raw folder.
 
 
 ## 3. Image extraction
@@ -125,6 +114,8 @@ Fill, for specific markers (seek the help of an expert), the column `deepcell` w
  `1` if is nuclear marker
  `2` if is cellular membrane marker or cytoplasm marker
  of leave empty if none of above.
+ 
+An experienced  biologist  must provide this information. For the Hyperion data, Thomas Daubon gave us the list (`$THESISDIR/spatial_thesis/data_and_analyses/imaging_mass_cytometry/markers_for_segmentation-v2-.xlsx`;  then I manually set his annotations in the panel.csv file
  
 Then run:
 
@@ -155,6 +146,7 @@ steinbock export anndata
 mkdir graphs
 steinbock export graphs
 
+
 ```
 Error when trying to export as graph: 
 nothing is  saved into `graphs/`, and another empty dir is generated `graphs_export/`
@@ -176,3 +168,29 @@ Jonas Windhager, Bernd Bodenmiller, Nils Eling (2020). An end-to-end workflow fo
     bioRxiv, doi: 10.1101/2021.11.12.468357
 
 
+-----------------------
+Note, version 0.15: the team from Montpellier who gave us the data used the Steinbock v 0.15.0 as it was used by the platform as explained in the `Seg_Mesmer_Tutorial_Windows.docx`  file that they attached to the results:
+
+
+```
+sudo docker run -v /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.15.0
+
+```
+
+Docker automatically started the download of the image with a message "Pulling from bodenmillergroup/steinbock..."
+
+Then create the alias for the full docker command, to be able to launch `steinbock [OPTIONS]` in terminal:
+
+```
+alias steinbockV015="sudo docker run -v /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock:/data -v /tmp/.X11-unix:/tmp/.X11-unix -v ~/.Xauthority:/home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/.Xauthority:ro -e DISPLAY ghcr.io/bodenmillergroup/steinbock:0.15.0"
+
+```
+I tested and the results are the same, but commands can be different, for example:
+with the version   0.15.0 of Steinbock
+
+```
+steinbockV015 preprocess imc panel --imcpanel /home/johanna/spatial_thesis/data_and_analyses/imaging_mass_cytometry/work_steinbock/raw/panel_raw.csv -o panel.csv
+```
+(whereas with latest version 0.6.2:   Not `--o` but `--dest` argument for the output file name)
+
+The version 0.15 allows to save tiff files to open with HISTOCAT (but histocat is only executable on MAC or Windows, and needs MATLAB) https://www.imc.unibe.ch/unibe/portal/fak_medizin/micro_imc/content/e987276/e1000503/e1000509/histoCAT_installation_1.721.pdf
