@@ -1,0 +1,10 @@
+name: vide 
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - r-base=4.3.1
+  - r-biocmanager
+  - r-devtools
+
