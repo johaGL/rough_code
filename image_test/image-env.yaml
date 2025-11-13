@@ -1,0 +1,12 @@
+name: image-env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10.18
+  - numpy
+  - scipy
+  - scikit-learn
+  - scikit-image
+  - cairosvg
+  - anndata
